@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currency</title>
     <script>
-        fetch("https://api.exchangerate.host/latest?base=USD")
-        .then(response => {
-            return response.json();
-        })
-        .then(data=>{
-            console.log(data);
-            const rate= data.rates.EUR;
-            document.querySelector('h1').innerHTML= `1 USD is equal to ${rate}EUR`;
-        }); 
+        document.addEventListener('DOMContentLoaded', () => {
+
+            document.querySelector('form').onsubmit=()=>{
+                fetch("https://api.exchangerate.host/latest?base=USD")
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    const currency = document.querySelector('#currency').value.toUpperCase();
+                    const rate = data.rates[currency];
+                    if (rate !== undefined){
+                        document.querySelector('h1').innerHTML = `1 USD is equal to ${rate.toFixed(3)} ${currency}`;
+                    }else{
+                        document.querySelector('h1').innerHTML= 'Invalid currency.';
+                    }
+                    
+                })
+                .catch(error=> {
+                    console.log('Error:',error);
+                })
+                return false;
+            }
+
+                    })
+
+
     </script>
 </head>
+
 <body>
+    <form>
+        <input type="text" id="currency" placeholder="Currency">
+        <input type="submit" value="Convert">
+    </form>
     <h1></h1>
 </body>
+
 </html>
